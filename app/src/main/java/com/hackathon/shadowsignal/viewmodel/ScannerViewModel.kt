@@ -33,6 +33,14 @@ class ScannerViewModel(
     private val threatFusion: ThreatFusion,
     private val permissionManager: PermissionManager
 ) : ViewModel() {
+    
+    /**
+     * Get the camera analyzer implementation for UI binding
+     * Returns null if not a CameraAnalyzerImpl instance
+     */
+    fun getCameraAnalyzer(): com.hackathon.shadowsignal.data.CameraAnalyzerImpl? {
+        return cameraAnalyzer as? com.hackathon.shadowsignal.data.CameraAnalyzerImpl
+    }
 
     private val _uiState = MutableStateFlow(ScannerUiState.default())
     val uiState: StateFlow<ScannerUiState> = _uiState.asStateFlow()

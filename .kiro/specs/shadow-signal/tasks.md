@@ -79,7 +79,11 @@
     - Ensure 15+ FPS processing rate
     - _Requirements: 6.1, 6.2_
 
-- [ ] 5. Implement Audio Module with AudioRecord
+- [x] 5. Implement Audio Module with AudioRecord
+
+
+
+
   - [x] 5.1 Set up AudioRecord initialization
 
 
@@ -117,14 +121,22 @@
     - Emit AudioAnomaly with FREQUENCY type and detected frequency
     - _Requirements: 2.3_
   
-  - [ ] 5.4 Implement audio spike detection
+  - [x] 5.4 Implement audio spike detection
+
+
+
     - Calculate RMS amplitude for each audio window
     - Maintain rolling average of last 10 windows
     - Flag spike when current amplitude exceeds average by 20dB
     - Emit AudioAnomaly with SPIKE type
     - _Requirements: 2.4_
   
-  - [ ] 5.5 Optimize audio processing performance
+  - [x] 5.5 Optimize audio processing performance
+
+
+
+
+
     - Use circular buffer for audio samples
     - Run FFT calculations on Dispatchers.Default coroutine
     - Ensure processing latency under 300ms
@@ -156,28 +168,40 @@
   - Handle lifecycle events properly
   - _Requirements: 7.1, 7.2, 7.5_
 
-- [ ] 8. Implement Spooky UI theme and styling
+- [x] 8. Implement Spooky UI theme and styling
+
+
+
+
+
   - Create Color.kt with dark theme colors (DarkBackground, NeonGreen, NeonCyan, NeonRed)
   - Define ShadowSignalTheme composable with Material3 dark color scheme
   - Configure typography with monospace fonts for scientific feel
   - Add glow effects using shadow modifiers
   - _Requirements: 4.1, 4.2_
 
-- [ ] 9. Implement UI components
-  - [ ] 9.1 Create MainActivity and ScannerScreen composable
+- [-] 9. Implement UI components
+
+
+  - [x] 9.1 Create MainActivity and ScannerScreen composable
+
+
     - Set up MainActivity with Compose setContent
     - Create ScannerScreen composable as main UI container
     - Observe ScannerUiState from ViewModel
     - Handle permission requests on launch
     - _Requirements: 1.1, 4.1_
   
-  - [ ] 9.2 Implement CameraPreview composable
+  - [x] 9.2 Implement CameraPreview composable
+
+
     - Create AndroidView wrapper for CameraX PreviewView
     - Display full-screen camera feed
     - Add dark overlay for spooky effect
     - _Requirements: 1.1, 4.7_
   
-  - [ ] 9.3 Implement ThreatMeter composable
+  - [-] 9.3 Implement ThreatMeter composable
+
     - Create circular or arc gauge using Canvas API
     - Display current threat level with color coding (Green/Yellow/Red)
     - Add animated transitions using animateFloatAsState
