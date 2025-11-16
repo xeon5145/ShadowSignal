@@ -142,7 +142,9 @@
     - Ensure processing latency under 300ms
     - _Requirements: 2.5, 6.2_
 
-- [ ] 6. Implement Threat Fusion Engine
+- [x] 6. Implement Threat Fusion Engine
+
+
   - Create ThreatFusionImpl class implementing ThreatFusion interface
   - Implement composite score calculation (visual 60%, audio 40%)
   - Calculate visual score from max of motion, light, and contour intensities
@@ -180,7 +182,9 @@
   - Add glow effects using shadow modifiers
   - _Requirements: 4.1, 4.2_
 
-- [-] 9. Implement UI components
+- [x] 9. Implement UI components
+
+
 
 
   - [x] 9.1 Create MainActivity and ScannerScreen composable
@@ -200,7 +204,8 @@
     - Add dark overlay for spooky effect
     - _Requirements: 1.1, 4.7_
   
-  - [-] 9.3 Implement ThreatMeter composable
+  - [x] 9.3 Implement ThreatMeter composable
+
 
     - Create circular or arc gauge using Canvas API
     - Display current threat level with color coding (Green/Yellow/Red)
@@ -209,14 +214,18 @@
     - Position prominently on screen
     - _Requirements: 4.5, 4.6_
   
-  - [ ] 9.4 Implement WaveformVisualizer composable
+  - [x] 9.4 Implement WaveformVisualizer composable
+
+
     - Create Canvas-based waveform display
     - Draw audio samples as connected line graph
     - Use neon green color with glow effect
     - Update at 30 FPS
     - _Requirements: 4.3_
   
-  - [ ] 9.5 Implement SpectrumVisualizer composable
+  - [x] 9.5 Implement SpectrumVisualizer composable
+
+
     - Create Canvas-based frequency spectrum bars
     - Use logarithmic frequency scale for x-axis
     - Draw bars with neon cyan color
@@ -224,7 +233,9 @@
     - Update in real-time from FFT data
     - _Requirements: 4.4_
   
-  - [ ] 9.6 Implement AnomalyOverlay composable
+  - [x] 9.6 Implement AnomalyOverlay composable
+
+
     - Display floating indicators for detected anomalies
     - Show anomaly type and intensity as text
     - Add fade in/out animations
@@ -232,7 +243,11 @@
     - Overlay on camera preview
     - _Requirements: 4.7_
 
-- [ ] 10. Implement error handling and edge cases
+- [x] 10. Implement error handling and edge cases
+
+
+
+
   - Add try-catch blocks around camera initialization
   - Handle AudioRecord initialization failures gracefully
   - Implement error state in ScannerUiState
@@ -242,7 +257,9 @@
   - Test permission denial scenarios
   - _Requirements: 6.6_
 
-- [ ] 11. Build and test APK
+- [x] 11. Build and test APK
+
+
   - Run `./gradlew clean assembleDebug` from CLI
   - Verify APK is generated in app/build/outputs/apk/debug/
   - Check APK size is under 50MB
@@ -250,7 +267,10 @@
   - Verify app launches without crashes
   - _Requirements: 5.2, 5.3, 5.7_
 
-- [ ] 12. Perform integration testing and optimization
+- [x] 12. Perform integration testing and optimization
+
+
+
   - Test camera feed displays correctly on device
   - Test motion detection by moving in front of camera
   - Test brightness detection by changing lighting

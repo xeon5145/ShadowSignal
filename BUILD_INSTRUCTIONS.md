@@ -1,122 +1,156 @@
-# Build Instructions for Shadow Signal
+# Shadow Signal - APK Build Instructions
 
-## Environment Setup
+## Prerequisites
+- Java Development Kit (JDK) 17 or higher
+- Android SDK with API 35 (Android 15)
+- Gradle 8.2 or higher
 
-### 1. Install Java Development Kit (JDK)
+## Build Issue Fix
 
-The project requires JDK 17 or higher.
+The current build error is caused by a Java version parsing issue in Gradle. Here are the solutions:
 
-**Option A: Using Chocolatey (Windows Package Manager)**
-```cmd
-choco install openjdk17
+### Option 1: Use Android Studio (Recommended)
+1. Open the project in Android Studio
+2. Wait for Gradle sync to complete
+3. Go to **Build > Build Bundle(s) / APK(s) > Build APK(s)**
+4. The APK will be generated at: `app/build/outputs/apk/debug/app-debug.apk`
+
+### Option 2: Fix Gradle Wrapper (Command Line)
+If you want to build from command line, try these steps:
+
+1. **Check your Java version:**
+   ```cmd
+   java -version
+   ```
+   Make sure you're using JDK 17 or 21 (not JDK 25 which causes parsing issues)
+
+2. **Set JAVA_HOME environment variable:**
+   ```cmd
+   set JAVA_HOME=C:\Program Files\Java\jdk-17
+   set PATH=%JAVA_HOME%\bin;%PATH%
+   ```
+
+3. **Clean and build:**
+   ```cmd
+   gradlew clean
+   gradlew assembleDebug
+   ```
+
+### Option 3: Use Gradle Daemon with Specific Java Version
+1. Stop all Gradle daemons:
+   ```cmd
+   gradlew --stop
+   ```
+
+2. Build with specific Java version:
+   ```cmd
+   gradlew assembleDebug -Dorg.gradle.java.home="C:\Program Files\Java\jdk-17"
+   ```
+
+### Option 4: Disable Configuration Cache Temporarily
+If the issue persists, edit `gradle.properties` and comment out:
+```properties
+# org.gradle.configuration-cache=true
 ```
 
-**Option B: Manual Installation**
-1. Download JDK 17 from https://adoptium.net/
-2. Run the installer
-3. Set environment variables:
-   - `JAVA_HOME` = `C:\Program Files\Eclipse Adoptium\jdk-17.x.x.x-hotspot`
-   - Add to `PATH`: `%JAVA_HOME%\bin`
-
-**Verify Installation:**
+Then run:
 ```cmd
-java -version
+gradlew clean assembleDebug
 ```
 
-### 2. Verify Project Setup
+## Build Variants
 
-Run the verification script:
+### Debug APK (for testing)
 ```cmd
-verify-setup.bat
+gradlew assembleDebug
 ```
+Output: `app/build/outputs/apk/debug/app-debug.apk`
 
-This will check:
-- Java installation
-- JAVA_HOME environment variable
-- Gradle wrapper presence
-- Project structure integrity
-
-## Building the Project
-
-### Build Debug APK
-
+### Release APK (for distribution)
 ```cmd
-gradlew.bat assembleDebug
+gradlew assembleRelease
 ```
+Output: `app/build/outputs/apk/release/app-release-unsigned.apk`
 
-**Output Location:** `app\build\outputs\apk\debug\app-debug.apk`
+## Installation on Device
 
-### Build Release APK
+### Using ADB
+1. Enable USB debugging on your Android device
+2. Connect device via USB
+3. Install the APK:
+   ```cmd
+   adb install app/build/outputs/apk/debug/app-debug.apk
+   ```
 
-```cmd
-gradlew.bat assembleRelease
-```
+### Manual Installation
+1. Copy the APK to your device
+2. Open the APK file on your device
+3. Allow installation from unknown sources if prompted
+4. Install the app
 
-**Output Location:** `app\build\outputs\apk\release\app-release-unsigned.apk`
+## Permissions Required
+The app requires the following permissions (will be requested at runtime):
+- **Camera**: For visual anomaly detection
+- **Microphone**: For audio anomaly detection
 
-### Clean Build
-
-```cmd
-gradlew.bat clean assembleDebug
-```
-
-
-## Installing on Device
-
-### Prerequisites
-- Enable Developer Options on your Android device
-- Enable USB Debugging
-- Install ADB (Android Debug Bridge)
-
-### Install APK
-```cmd
-adb install app\build\outputs\apk\debug\app-debug.apk
-```
-
-### Reinstall (if already installed)
-```cmd
-adb install -r app\build\outputs\apk\debug\app-debug.apk
-```
-
-### Uninstall
-```cmd
-adb uninstall com.hackathon.shadowsignal
-```
+## Target Platform
+- **Minimum SDK**: Android 7.0 (API 24)
+- **Target SDK**: Android 15 (API 35)
+- **Compile SDK**: Android 15 (API 35)
 
 ## Troubleshooting
 
-### "JAVA_HOME is not set"
-Set the JAVA_HOME environment variable:
-```cmd
-setx JAVA_HOME "C:\Program Files\Eclipse Adoptium\jdk-17.x.x.x-hotspot"
-```
-Then restart your command prompt.
+### "0 was unexpected at this time" Error
+This is caused by Gradle having trouble parsing Java version 25.x. Solutions:
+1. Downgrade to JDK 17 or JDK 21
+2. Use Android Studio to build instead
+3. Set JAVA_HOME explicitly to a compatible JDK version
 
-### "Gradle sync failed"
-Try cleaning the project:
-```cmd
-gradlew.bat clean
-```
-
-### "SDK location not found"
-Create `local.properties` in the project root:
-```
+### "SDK location not found" Error
+Create a `local.properties` file in the project root:
+```properties
 sdk.dir=C\:\\Users\\YourUsername\\AppData\\Local\\Android\\Sdk
 ```
 
-### Build is slow
-Add to `gradle.properties`:
-```
-org.gradle.daemon=true
-org.gradle.parallel=true
-org.gradle.caching=true
+### Out of Memory Error
+Increase Gradle memory in `gradle.properties`:
+```properties
+org.gradle.jvmargs=-Xmx4096m -Dfile.encoding=UTF-8
 ```
 
-## Project Configuration Summary
+## Verification
 
-- **Package Name:** com.hackathon.shadowsignal
-- **Min SDK:** 24 (Android 7.0)
-- **Target SDK:** 34 (Android 14)
-- **Build Tools:** Gradle 8.2
-- **Kotlin Version:** 1.9.22
-- **AGP Version:** 8.2.2
+After building, verify the APK:
+```cmd
+gradlew assembleDebug --info
+```
+
+Check APK size (should be under 50MB):
+```cmd
+dir app\build\outputs\apk\debug\app-debug.apk
+```
+
+## Quick Build Script
+
+Create a `build.bat` file for easy building:
+```batch
+@echo off
+echo Stopping Gradle daemons...
+call gradlew --stop
+
+echo Cleaning project...
+call gradlew clean
+
+echo Building debug APK...
+call gradlew assembleDebug
+
+echo.
+echo Build complete!
+echo APK location: app\build\outputs\apk\debug\app-debug.apk
+pause
+```
+
+Run it with:
+```cmd
+build.bat
+```

@@ -74,6 +74,25 @@ class ScannerViewModel(
      * Requirements: 7.1, 7.2
      */
     private fun observeSensorData() {
+        // Observe camera anomalies and feed to threat fusion
+        viewModelScope.launch {
+            cameraAnalyzer.getAnomalyFlow().collect { visualAnomaly ->
+                visualAnomaly?.let {
+                    threatFusion.updateVisualAnomaly(it)
+                }
+            }
+        }
+        
+        // Observe audio anomalies and feed to threat fusion
+        viewModelScope.launch {
+            audioAnalyzer.getAnomalyFlow().collect { audioAnomaly ->
+                audioAnomaly?.let {
+                    threatFusion.updateAudioAnomaly(it)
+                }
+            }
+        }
+        
+        // Combine flows from all modules for UI state
         viewModelScope.launch {
             combine(
                 threatFusion.getThreatLevelFlow(),
@@ -86,8 +105,8 @@ class ScannerViewModel(
                 val threatAssessment = com.hackathon.shadowsignal.domain.model.ThreatAssessment(
                     level = threatLevel,
                     compositeScore = compositeScore,
-                    visualScore = 0f, // Will be calculated by fusion engine
-                    audioScore = 0f,   // Will be calculated by fusion engine
+                    visualScore = 0f, // Calculated internally by fusion engine
+                    audioScore = 0f,   // Calculated internally by fusion engine
                     timestamp = System.currentTimeMillis()
                 )
 
