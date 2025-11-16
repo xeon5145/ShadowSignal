@@ -112,32 +112,34 @@ private fun ScannerScreenContent(
             modifier = Modifier.fillMaxSize()
         )
         
-        // Visualizers - positioned at bottom
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            // Spectrum visualizer
-            val anomalyFrequencies = uiState.recentAnomalies
-                .filterIsInstance<com.hackathon.shadowsignal.domain.model.AudioAnomaly>()
-                .mapNotNull { it.frequency }
-                .toSet()
-            
-            SpectrumVisualizer(
-                spectrum = uiState.audioSpectrum,
-                anomalyFrequencies = anomalyFrequencies
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            // Waveform visualizer
-            WaveformVisualizer(
-                audioSamples = uiState.audioSpectrum
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
+        // Visualizers - positioned at bottom (only show if scanning and have data)
+        if (uiState.isScanning && uiState.audioSpectrum.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                // Spectrum visualizer
+                val anomalyFrequencies = uiState.recentAnomalies
+                    .filterIsInstance<com.hackathon.shadowsignal.domain.model.AudioAnomaly>()
+                    .mapNotNull { it.frequency }
+                    .toSet()
+                
+                SpectrumVisualizer(
+                    spectrum = uiState.audioSpectrum,
+                    anomalyFrequencies = anomalyFrequencies
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                // Waveform visualizer
+                WaveformVisualizer(
+                    audioSamples = uiState.audioSpectrum
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
         
         // Error message overlay - displayed at bottom center

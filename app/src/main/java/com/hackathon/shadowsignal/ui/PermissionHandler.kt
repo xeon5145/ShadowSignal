@@ -1,13 +1,18 @@
 package com.hackathon.shadowsignal.ui
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.hackathon.shadowsignal.data.PermissionState
+import com.hackathon.shadowsignal.MainActivity
+import com.hackathon.shadowsignal.viewmodel.ScannerViewModel
 
 /**
  * Composable that handles permission state and displays appropriate UI
@@ -16,42 +21,30 @@ import com.hackathon.shadowsignal.data.PermissionState
  */
 @Composable
 fun PermissionHandler(
-    permissionState: PermissionState,
-    onRequestPermissions: () -> Unit,
+    viewModel: ScannerViewModel,
     content: @Composable () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
     when {
-        permissionState.cameraGranted && permissionState.microphoneGranted -> {
+        uiState.permissionsGranted -> {
             // All permissions granted, show main content
             content()
         }
-        !permissionState.cameraGranted && !permissionState.microphoneGranted -> {
-            // Both permissions denied
+        else -> {
+            // Permissions not granted
             PermissionDeniedScreen(
                 title = "Camera and Microphone Access Required",
                 message = "Shadow Signal needs access to your camera and microphone to detect anomalies. " +
                         "Please grant these permissions to continue.",
-                onRequestPermissions = onRequestPermissions
-            )
-        }
-        !permissionState.cameraGranted -> {
-            // Only camera denied
-            PermissionDeniedScreen(
-                title = "Camera Access Required",
-                message = "Shadow Signal needs camera access to detect visual anomalies. " +
-                        "The app will continue with audio-only detection, but visual features will be disabled.",
-                onRequestPermissions = onRequestPermissions,
-                canContinue = true
-            )
-        }
-        !permissionState.microphoneGranted -> {
-            // Only microphone denied
-            PermissionDeniedScreen(
-                title = "Microphone Access Required",
-                message = "Shadow Signal needs microphone access to detect audio anomalies. " +
-                        "The app will continue with camera-only detection, but audio features will be disabled.",
-                onRequestPermissions = onRequestPermissions,
-                canContinue = true
+                onRequestPermissions = { viewModel.requestPermissions(context as MainActivity) },
+                onOpenSettings = {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", context.packageName, null)
+                    }
+                    context.startActivity(intent)
+                }
             )
         }
     }
@@ -65,6 +58,7 @@ private fun PermissionDeniedScreen(
     title: String,
     message: String,
     onRequestPermissions: () -> Unit,
+    onOpenSettings: () -> Unit,
     canContinue: Boolean = false
 ) {
     Box(
@@ -89,13 +83,15 @@ private fun PermissionDeniedScreen(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary
                 )
                 
                 Text(
                     text = message,
                     style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 
                 Button(
@@ -103,6 +99,13 @@ private fun PermissionDeniedScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Grant Permissions")
+                }
+                
+                OutlinedButton(
+                    onClick = onOpenSettings,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Open App Settings")
                 }
                 
                 if (canContinue) {

@@ -1,5 +1,6 @@
 package com.hackathon.shadowsignal.viewmodel
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hackathon.shadowsignal.data.AudioAnalyzer
@@ -52,6 +53,10 @@ class ScannerViewModel(
     init {
         observePermissions()
         observeSensorData()
+    }
+
+    fun requestPermissions(activity: Activity) {
+        permissionManager.requestPermissions(activity)
     }
 
     /**
@@ -111,7 +116,7 @@ class ScannerViewModel(
                 )
 
                 // Update recent anomalies list
-                updateRecentAnomalies(visualAnomaly, audioAnomaly)
+                updateRecentAnomalis(visualAnomaly, audioAnomaly)
 
                 Triple(threatAssessment, spectrum, recentAnomalies.toList())
             }.collect { (threatAssessment, spectrum, anomalies) ->
@@ -129,7 +134,7 @@ class ScannerViewModel(
     /**
      * Update the list of recent anomalies, maintaining a maximum size
      */
-    private fun updateRecentAnomalies(
+    private fun updateRecentAnomalis(
         visualAnomaly: VisualAnomaly?,
         audioAnomaly: AudioAnomaly?
     ) {

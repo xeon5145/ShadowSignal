@@ -188,7 +188,7 @@ class AudioAnalyzerImpl : AudioAnalyzer {
                 while (sampleBuffer.size >= FFT_WINDOW_SIZE) {
                     // Extract samples for processing
                     val windowSamples = ShortArray(FFT_WINDOW_SIZE) { i ->
-                        sampleBuffer.get(i)
+                        sampleBuffer.getAsShort(i)
                     }
                     
                     // Remove processed samples from circular buffer
@@ -379,7 +379,7 @@ class AudioAnalyzerImpl : AudioAnalyzer {
             var sum = 0.0
             val count = amplitudeHistory.size - 1
             for (i in 0 until count) {
-                sum += amplitudeHistory.get(i, asFloat = true)
+                sum += amplitudeHistory.getAsFloat(i)
             }
             val averageAmplitude = (sum / count).toFloat()
             
@@ -456,7 +456,7 @@ class AudioAnalyzerImpl : AudioAnalyzer {
             }
         }
         
-        fun get(index: Int): Short {
+        fun getAsShort(index: Int): Short {
             if (index >= count) {
                 throw IndexOutOfBoundsException("Index $index out of bounds for size $count")
             }
@@ -468,7 +468,7 @@ class AudioAnalyzerImpl : AudioAnalyzer {
             }
         }
         
-        fun get(index: Int, asFloat: Boolean): Float {
+        fun getAsFloat(index: Int): Float {
             if (index >= count) {
                 throw IndexOutOfBoundsException("Index $index out of bounds for size $count")
             }

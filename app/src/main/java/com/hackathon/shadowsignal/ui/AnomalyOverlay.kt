@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -83,13 +82,13 @@ private fun AnomalyIndicator(
     modifier: Modifier = Modifier
 ) {
     var isVisible by remember(anomaly.timestamp) { mutableStateOf(true) }
-    
+
     // Auto-hide after 3 seconds
     LaunchedEffect(anomaly.timestamp) {
         delay(3000)
         isVisible = false
     }
-    
+
     AnimatedVisibility(
         visible = isVisible,
         enter = fadeIn(animationSpec = tween(300)),
@@ -113,20 +112,20 @@ private fun AnomalyIndicator(
                 NeonCyan to text
             }
         }
-        
+
         // Position based on anomaly region or stack vertically
         val offsetY = if (anomaly is VisualAnomaly && anomaly.affectedRegion != null) {
             anomaly.affectedRegion.top
         } else {
             80 + (index * 60) // Stack indicators vertically
         }
-        
+
         val offsetX = if (anomaly is VisualAnomaly && anomaly.affectedRegion != null) {
             anomaly.affectedRegion.left
         } else {
             16 // Default left margin
         }
-        
+
         Box(
             modifier = Modifier
                 .offset { IntOffset(offsetX, offsetY) }
